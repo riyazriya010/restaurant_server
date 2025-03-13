@@ -7,14 +7,32 @@ const config = {
     development: {
         url: DATABASE_URL,
         dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        },
     },
     test: {
         url: DATABASE_URL,
         dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        },
     },
     production: {
         url: DATABASE_URL,
         dialect: 'postgres',
+        dialectOptions: {
+            ssl: {
+                require: true,
+                rejectUnauthorized: false,
+            },
+        },
     },
 };
 module.exports = config;

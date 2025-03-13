@@ -44,12 +44,17 @@
 
 // module.exports = config;
 
-
 import { Dialect } from 'sequelize';
 
 interface DBConfig {
   url: string;
   dialect: Dialect;
+  dialectOptions?: {
+    ssl: {
+      require: boolean;
+      rejectUnauthorized: boolean;
+    };
+  };
 }
 
 interface Config {
@@ -65,14 +70,32 @@ const config: Config = {
   development: {
     url: DATABASE_URL,
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   test: {
     url: DATABASE_URL,
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
   production: {
     url: DATABASE_URL,
     dialect: 'postgres',
+    dialectOptions: {
+      ssl: {
+        require: true,
+        rejectUnauthorized: false,
+      },
+    },
   },
 };
 
