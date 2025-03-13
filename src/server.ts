@@ -8,8 +8,7 @@ const PORT = 5005
 const app = express()
 
 app.use(express.json()); // ✅ This allows Express to parse JSON requests
-app.use(express.urlencoded({ extended: true })); 
-app.use("/user-service", restaurantRoutes)
+app.use(express.urlencoded({ extended: true }));
 
 app.use(
     cors({
@@ -24,6 +23,7 @@ app.use(
     })
   );
   
+  app.use("/user-service", restaurantRoutes)
 
 app.listen(PORT, (error: any) => {
     if(error) throw error
