@@ -1,52 +1,20 @@
 "use strict";
+// import { Dialect } from 'sequelize';
 Object.defineProperty(exports, "__esModule", { value: true });
-// Define database configurations
+// Replace this with your actual Render Database URL
+const DATABASE_URL = "postgresql://restaurant_user:TGX32vYvz2g8ChhVpGhb0yJVOu6Plt9F@dpg-cv9as58gph6c73ak56tg-a.oregon-postgres.render.com/restaurent_1pqc";
 const config = {
     development: {
-        username: 'postgres',
-        password: `1234@4321`,
-        database: 'restaurent',
-        host: '127.0.0.1',
+        url: DATABASE_URL,
         dialect: 'postgres',
     },
     test: {
-        username: 'postgres',
-        password: '1234@4321',
-        database: 'restaurent',
-        host: '127.0.0.1',
+        url: DATABASE_URL,
         dialect: 'postgres',
     },
     production: {
-        username: 'postgres',
-        password: '1234@4321',
-        database: 'restaurent',
-        host: '127.0.0.1',
+        url: DATABASE_URL,
         dialect: 'postgres',
     },
 };
-// Export the config object
-// export default config;
 module.exports = config;
-// {
-//   "development": {
-//     "username": "root",
-//     "password": null,
-//     "database": "database_development",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   },
-//   "test": {
-//     "username": "root",
-//     "password": null,
-//     "database": "database_test",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   },
-//   "production": {
-//     "username": "root",
-//     "password": null,
-//     "database": "database_production",
-//     "host": "127.0.0.1",
-//     "dialect": "mysql"
-//   }
-// }
