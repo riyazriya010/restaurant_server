@@ -7,7 +7,7 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const restaurant_1 = __importDefault(require("./routes/restaurant"));
 dotenv_1.default.config();
-const PORT = process.env.PORT;
+const PORT = 5005;
 const app = (0, express_1.default)();
 app.use(express_1.default.json()); // ✅ This allows Express to parse JSON requests
 app.use(express_1.default.urlencoded({ extended: true }));

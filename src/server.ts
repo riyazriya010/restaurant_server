@@ -3,7 +3,7 @@ import dotenv from 'dotenv'
 import restaurantRoutes from './routes/restaurant'
 dotenv.config()
 
-const PORT = process.env.PORT
+const PORT = 5005
 const app = express()
 
 app.use(express.json()); // ✅ This allows Express to parse JSON requests
