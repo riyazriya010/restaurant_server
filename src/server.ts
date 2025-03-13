@@ -25,6 +25,7 @@ app.use(
   
   app.use("/user-service", restaurantRoutes)
 
+  //start server
 app.listen(PORT, (error: any) => {
     if(error) throw error
     console.log(`SERVER IS RUNNING ON PORT: http://localhost:${PORT}`);

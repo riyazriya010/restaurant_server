@@ -23,6 +23,7 @@ app.use((0, cors_1.default)({
     credentials: true, // ✅ Allowed outside 'origin'
 }));
 app.use("/user-service", restaurant_1.default);
+//start server
 app.listen(PORT, (error) => {
     if (error)
         throw error;
