@@ -44,6 +44,10 @@
 
 // module.exports = config;
 
+
+
+
+
 import { Dialect } from 'sequelize';
 
 interface DBConfig {
@@ -63,8 +67,8 @@ interface Config {
   production: DBConfig;
 }
 
-// Replace this with your actual Render Database URL
-const DATABASE_URL = "postgresql://restaurant_user:TGX32vYvz2g8ChhVpGhb0yJVOu6Plt9F@dpg-cv9as58gph6c73ak56tg-a.oregon-postgres.render.com/restaurent_1pqc";
+// Add `?sslmode=require` to ensure SSL is enabled
+const DATABASE_URL = "postgresql://restaurant_user:TGX32vYvz2g8ChhVpGhb0yJVOu6Plt9F@dpg-cv9as58gph6c73ak56tg-a.oregon-postgres.render.com/restaurent_1pqc?sslmode=require";
 
 const config: Config = {
   development: {
@@ -73,7 +77,7 @@ const config: Config = {
     dialectOptions: {
       ssl: {
         require: true,
-        rejectUnauthorized: false,
+        rejectUnauthorized: false, // Set this to false if your certificate is self-signed
       },
     },
   },
