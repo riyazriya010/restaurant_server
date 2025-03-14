@@ -147,13 +147,16 @@ export default class RestaurantController {
     async deleteData(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.query
-            const deleteData = await db.Restaurant.destroy({
-                where: {
-                  id,
-                },
-              });
+            console.log('id ',id)
+            const restaurant = await db.Restaurant.findByPk(id);
+            if (!restaurant) {
+                return res.status(404).json({ success: false, message: "Restaurant not found" });
+            }
+            console.log('restaurant ',restaurant)
 
-              return res.status(200).json({
+            const deleteData = await db.Restaurant.destroy({ where: { id }, force: true });
+
+            return res.status(200).json({
                 success: true,
                 message: "Restaurant Deleted successfully!",
                 data: deleteData,

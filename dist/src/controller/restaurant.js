@@ -146,11 +146,13 @@ class RestaurantController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 const { id } = req.query;
-                const deleteData = yield models_1.default.Restaurant.destroy({
-                    where: {
-                        id,
-                    },
-                });
+                console.log('id ', id);
+                const restaurant = yield models_1.default.Restaurant.findByPk(id);
+                if (!restaurant) {
+                    return res.status(404).json({ success: false, message: "Restaurant not found" });
+                }
+                console.log('restaurant ', restaurant);
+                const deleteData = yield models_1.default.Restaurant.destroy({ where: { id }, force: true });
                 return res.status(200).json({
                     success: true,
                     message: "Restaurant Deleted successfully!",
