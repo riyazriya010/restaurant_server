@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import db from "../../db/models"; // Ensure correct import
 import { error } from "console";
-import { where } from "sequelize";
+import { Op } from "sequelize";
 
 export default class RestaurantController {
     async createRestaurant(req: Request, res: Response): Promise<any> {
@@ -102,7 +102,13 @@ export default class RestaurantController {
             const { name, contact, address } = req.body;
             console.log('data ', req.body)
 
-            const existData = await db.Restaurant.findOne({ where: { name } })
+            const existData = await db.Restaurant.findOne({ 
+                where: { 
+                    name,
+                    id: { [Op.ne]: id }
+                 },
+                
+             })
             if (existData) {
                 return res.status(403).json({
                     success: false,

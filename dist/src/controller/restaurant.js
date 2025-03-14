@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.restaurantController = void 0;
 const models_1 = __importDefault(require("../../db/models")); // Ensure correct import
 const console_1 = require("console");
+const sequelize_1 = require("sequelize");
 class RestaurantController {
     createRestaurant(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -110,7 +111,12 @@ class RestaurantController {
                 console.log('id ', id);
                 const { name, contact, address } = req.body;
                 console.log('data ', req.body);
-                const existData = yield models_1.default.Restaurant.findOne({ where: { name } });
+                const existData = yield models_1.default.Restaurant.findOne({
+                    where: {
+                        name,
+                        id: { [sequelize_1.Op.ne]: id }
+                    },
+                });
                 if (existData) {
                     return res.status(403).json({
                         success: false,
