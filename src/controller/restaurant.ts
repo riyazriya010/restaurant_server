@@ -38,7 +38,11 @@ export default class RestaurantController {
     //Get ALL Restaurent
     async getAllRestaurant(req: Request, res: Response): Promise<any> {
         try {
-            const response = await db.Restaurant.findAll()
+            const response = await db.Restaurant.findAll({
+                order: [
+                    ['id', 'DESC'],
+                ],
+            })
             return res.status(201).json({
                 success: true,
                 message: "Restaurant all got it successfully!",

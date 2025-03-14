@@ -49,7 +49,11 @@ class RestaurantController {
     getAllRestaurant(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const response = yield models_1.default.Restaurant.findAll();
+                const response = yield models_1.default.Restaurant.findAll({
+                    order: [
+                        ['id', 'DESC'],
+                    ],
+                });
                 return res.status(201).json({
                     success: true,
                     message: "Restaurant all got it successfully!",
