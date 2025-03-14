@@ -21,13 +21,17 @@ class RestaurantController {
             try {
                 const data = req.body;
                 console.log("Received Data:", data);
-                // Debugging: Check if db.Restaurant exists
                 console.log("Loaded Models:", Object.keys(models_1.default));
-                // Check if the Restaurant model is available
                 if (!models_1.default.Restaurant) {
                     throw new Error("Restaurant model is not initialized.");
                 }
-                // Create restaurant entry in the database
+                const existData = yield models_1.default.Restaurant.findOne({ where: { name: data.name } });
+                if (existData) {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Restaurant Name Already Exist!!",
+                    });
+                }
                 const response = yield models_1.default.Restaurant.create(data);
                 return res.status(201).json({
                     success: true,
@@ -106,6 +110,13 @@ class RestaurantController {
                 console.log('id ', id);
                 const { name, contact, address } = req.body;
                 console.log('data ', req.body);
+                const existData = yield models_1.default.Restaurant.findOne({ where: { name } });
+                if (existData) {
+                    return res.status(403).json({
+                        success: false,
+                        message: "Restaurant Name Already Exist!!",
+                    });
+                }
                 const [updatedRows] = yield models_1.default.Restaurant.update({ name, contact, address }, { where: { id } });
                 if (updatedRows === 0) {
                     // return res.status(404).json({
@@ -123,6 +134,31 @@ class RestaurantController {
             }
             catch (error) {
                 console.error("update by ID error :::", error);
+                return res.status(500).json({
+                    success: false,
+                    message: "Internal server error",
+                    error: error.message,
+                });
+            }
+        });
+    }
+    deleteData(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id } = req.query;
+                const deleteData = yield models_1.default.Restaurant.destroy({
+                    where: {
+                        id,
+                    },
+                });
+                return res.status(200).json({
+                    success: true,
+                    message: "Restaurant Deleted successfully!",
+                    data: deleteData,
+                });
+            }
+            catch (error) {
+                console.error("Delete by ID error :::", error);
                 return res.status(500).json({
                     success: false,
                     message: "Internal server error",

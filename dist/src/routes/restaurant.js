@@ -8,5 +8,6 @@ router.post("/create/restaurant", restaurant_1.restaurantController.createRestau
 router.get("/getAll/restaurant", restaurant_1.restaurantController.getAllRestaurant.bind(restaurant_1.restaurantController));
 router.get("/get/restaurant/:id", restaurant_1.restaurantController.getRestaurantById.bind(restaurant_1.restaurantController));
 router.patch("/update/restaurant", restaurant_1.restaurantController.updateRestaurant.bind(restaurant_1.restaurantController));
+router.delete('/delete/restaurant', restaurant_1.restaurantController.deleteData.bind(restaurant_1.restaurantController));
 const restaurantRoutes = router;
 exports.default = restaurantRoutes;

@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import db from "../../db/models"; // Ensure correct import
 import { error } from "console";
+import { where } from "sequelize";
 
 export default class RestaurantController {
     async createRestaurant(req: Request, res: Response): Promise<any> {
@@ -8,15 +9,19 @@ export default class RestaurantController {
             const data = req.body;
             console.log("Received Data:", data);
 
-            // Debugging: Check if db.Restaurant exists
             console.log("Loaded Models:", Object.keys(db));
 
-            // Check if the Restaurant model is available
             if (!db.Restaurant) {
                 throw new Error("Restaurant model is not initialized.");
             }
 
-            // Create restaurant entry in the database
+            const existData = await db.Restaurant.findOne({ where: { name: data.name } })
+            if (existData) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Restaurant Name Already Exist!!",
+                });
+            }
             const response = await db.Restaurant.create(data);
 
             return res.status(201).json({
@@ -93,9 +98,18 @@ export default class RestaurantController {
     async updateRestaurant(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.query
-            console.log('id ',id)
+            console.log('id ', id)
             const { name, contact, address } = req.body;
-            console.log('data ',req.body)
+            console.log('data ', req.body)
+
+            const existData = await db.Restaurant.findOne({ where: { name } })
+            if (existData) {
+                return res.status(403).json({
+                    success: false,
+                    message: "Restaurant Name Already Exist!!",
+                });
+            }
+
             const [updatedRows] = await db.Restaurant.update(
                 { name, contact, address },
                 { where: { id } }
@@ -120,6 +134,33 @@ export default class RestaurantController {
 
         } catch (error: any) {
             console.error("update by ID error :::", error);
+            return res.status(500).json({
+                success: false,
+                message: "Internal server error",
+                error: error.message,
+            });
+        }
+    }
+
+
+
+    async deleteData(req: Request, res: Response): Promise<any> {
+        try {
+            const { id } = req.query
+            const deleteData = await db.Restaurant.destroy({
+                where: {
+                  id,
+                },
+              });
+
+              return res.status(200).json({
+                success: true,
+                message: "Restaurant Deleted successfully!",
+                data: deleteData,
+            });
+
+        } catch (error: any) {
+            console.error("Delete by ID error :::", error);
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",
