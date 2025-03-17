@@ -2,35 +2,36 @@ import { Request, Response } from "express";
 import db from "../../db/models"; // Ensure correct import
 import { error } from "console";
 import { Op } from "sequelize";
+import RestaurantServices, { restaurantServices } from "../services/restaurant.services";
 
 export default class RestaurantController {
+    private restaurantServices: RestaurantServices
+
+    constructor(restaurantServices: RestaurantServices) {
+        this.restaurantServices = restaurantServices
+    }
+
     async createRestaurant(req: Request, res: Response): Promise<any> {
         try {
             const data = req.body;
-            console.log("Received Data:", data);
 
-            console.log("Loaded Models:", Object.keys(db));
-
-            if (!db.Restaurant) {
-                throw new Error("Restaurant model is not initialized.");
-            }
-
-            const existData = await db.Restaurant.findOne({ where: { name: data.name } })
-            if (existData) {
-                return res.status(403).json({
-                    success: false,
-                    message: "Restaurant Name Already Exist!!",
-                });
-            }
-            const response = await db.Restaurant.create(data);
+            const response = await this.restaurantServices.createRestaurant(data)
 
             return res.status(201).json({
                 success: true,
                 message: "Restaurant created successfully!",
                 data: response,
             });
+
         } catch (error: any) {
             console.error("Create controller error :::", error);
+            console.error("error Name :::", error.name);
+            if (error && error.name === 'RestaurantAlreadyExist') {
+                return res.status(403).json({
+                    success: false,
+                    message: "Restaurant Name Already Exist!!",
+                });
+            }
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",
@@ -39,15 +40,10 @@ export default class RestaurantController {
         }
     }
 
-
     //Get ALL Restaurent
     async getAllRestaurant(req: Request, res: Response): Promise<any> {
         try {
-            const response = await db.Restaurant.findAll({
-                order: [
-                    ['id', 'DESC'],
-                ],
-            })
+            const response = await this.restaurantServices.getAllRestaurant()
             return res.status(201).json({
                 success: true,
                 message: "Restaurant all got it successfully!",
@@ -68,14 +64,7 @@ export default class RestaurantController {
         try {
             const { id } = req.params; // Get ID from request params
 
-            const restaurant = await db.Restaurant.findByPk(id); // ✅ Find by Primary Key
-
-            if (!restaurant) {
-                return res.status(404).json({
-                    success: false,
-                    message: "Restaurant not found!",
-                });
-            }
+            const restaurant = await this.restaurantServices.getRestaurantById(id)
 
             return res.status(200).json({
                 success: true,
@@ -85,6 +74,12 @@ export default class RestaurantController {
 
         } catch (error: any) {
             console.error("Get by ID error :::", error);
+            if (error && error.name === 'RestaurantNotExist') {
+                return res.status(404).json({
+                    success: false,
+                    message: "Restaurant not found!",
+                });
+            }
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",
@@ -92,54 +87,29 @@ export default class RestaurantController {
             });
         }
     }
-
 
     //Find By Id and Update
     async updateRestaurant(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.query
-            console.log('id ', id)
             const { name, contact, address } = req.body;
-            console.log('data ', req.body)
 
-            const existData = await db.Restaurant.findOne({ 
-                where: { 
-                    name,
-                    id: { [Op.ne]: id }
-                 },
-                
-             })
-            if (existData) {
+            const response = await this.restaurantServices.updateRestaurant(String(id), { name, contact, address })
+
+            return res.status(200).json({
+                success: true,
+                message: "Restaurant updated successfully!",
+                data: response,
+            });
+
+        } catch (error: any) {
+            console.error("update by ID error :::", error);
+            if (error && error.name === 'RestaurantAlreadyExist') {
                 return res.status(403).json({
                     success: false,
                     message: "Restaurant Name Already Exist!!",
                 });
             }
-
-            const [updatedRows] = await db.Restaurant.update(
-                { name, contact, address },
-                { where: { id } }
-            )
-
-            if (updatedRows === 0) {
-                // return res.status(404).json({
-                //     success: false,
-                //     message: "Restaurant not found or no changes made!",
-                // });
-                throw error
-            }
-
-
-            const updatedRestaurant = await db.Restaurant.findByPk(id);
-
-            return res.status(200).json({
-                success: true,
-                message: "Restaurant updated successfully!",
-                data: updatedRestaurant,
-            });
-
-        } catch (error: any) {
-            console.error("update by ID error :::", error);
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",
@@ -148,19 +118,11 @@ export default class RestaurantController {
         }
     }
 
-
-
     async deleteData(req: Request, res: Response): Promise<any> {
         try {
             const { id } = req.query
-            console.log('id ',id)
-            const restaurant = await db.Restaurant.findByPk(id);
-            if (!restaurant) {
-                return res.status(404).json({ success: false, message: "Restaurant not found" });
-            }
-            console.log('restaurant ',restaurant)
 
-            const deleteData = await db.Restaurant.destroy({ where: { id }, force: true });
+            const deleteData = await this.restaurantServices.deleteData(String(id))
 
             return res.status(200).json({
                 success: true,
@@ -170,6 +132,9 @@ export default class RestaurantController {
 
         } catch (error: any) {
             console.error("Delete by ID error :::", error);
+            if (error && error.name === 'RestaurantNotExist') {
+                return res.status(404).json({ success: false, message: "Restaurant not found" });
+            }
             return res.status(500).json({
                 success: false,
                 message: "Internal server error",
@@ -181,4 +146,4 @@ export default class RestaurantController {
 
 }
 
-export const restaurantController = new RestaurantController();
+export const restaurantController = new RestaurantController(restaurantServices);
