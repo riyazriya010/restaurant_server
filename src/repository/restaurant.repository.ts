@@ -9,15 +9,18 @@ export default class RestaurantRepository extends BaseRepository<typeof db.Resta
 
     async createRestaurant(data: any): Promise<any> {
         try {
-
+            console.log('create ',data)
             const existData = await this.findOne(data.name)
+            console.log('exist before if',data)
             if (existData) {
+                console.log('exist ',data)
                 const error = new Error('Restaurant Already Exist')
                 error.name = 'RestaurantAlreadyExist'
                 throw error
             }
-
+            console.log('crosed exist ',data)
             const response = await this.create(data)
+            console.log('created ',response)
             return response
         } catch (error: any) {
             throw error

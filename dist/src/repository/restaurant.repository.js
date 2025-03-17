@@ -21,13 +21,18 @@ class RestaurantRepository extends baseRepository_1.default {
     createRestaurant(data) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                console.log('create ', data);
                 const existData = yield this.findOne(data.name);
+                console.log('exist before if', data);
                 if (existData) {
+                    console.log('exist ', data);
                     const error = new Error('Restaurant Already Exist');
                     error.name = 'RestaurantAlreadyExist';
                     throw error;
                 }
+                console.log('crosed exist ', data);
                 const response = yield this.create(data);
+                console.log('created ', response);
                 return response;
             }
             catch (error) {
